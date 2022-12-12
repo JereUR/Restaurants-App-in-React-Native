@@ -1,7 +1,7 @@
 import "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { app } from "./firebase-config";
+import { app } from "./firebase";
 
 /* const db = firestore(); */
 

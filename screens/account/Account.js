@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "firebase/firestore";
 import UserLogged from "./UserLogged";
 import UserGuest from "./UserGuest";
-import app from "../../utils/firebase-config";
+import app from "../../utils/firebase";
 import { getCurrentUser } from "../../utils/actions";
 import Loading from "../../components/Loading";
 
