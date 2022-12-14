@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import "firebase/firestore";
+
 import UserLogged from "./UserLogged";
 import UserGuest from "./UserGuest";
-import app from "../../utils/firebase";
 import { getCurrentUser, isUserLogged } from "../../utils/actions";
 import Loading from "../../components/Loading";
 
