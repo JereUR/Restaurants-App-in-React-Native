@@ -10,6 +10,8 @@ export const isUserLogged = () => {
   getAuth(app).onAuthStateChanged((user) => {
     user !== null && (isLogged = true);
   });
+
+  return isLogged;
 };
 
 export const getCurrentUser = (app) => {

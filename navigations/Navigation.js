@@ -3,12 +3,12 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Restaurants from "../screens/Restaurants";
-import Favorites from "../screens/Favorites";
-import TopRestaurants from "../screens/TopRestaurants";
-import Search from "../screens/Search";
-import Account from "../screens/account/Account";
 import { Icon } from "react-native-elements";
+import AccountStack from "./AccountStack";
+import SearchStack from "./SearchStack";
+import TopRestaurantsStack from "./TopRestaurants";
+import FavoritesStack from "./FavoritesStack";
+import RestaurantsStack from "./RestaurantStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -54,28 +54,28 @@ export default function Navigation() {
       >
         <Tab.Screen
           name="restaurants"
-          component={Restaurants}
-          options={{ title: "Restaurants" }}
+          component={RestaurantsStack}
+          options={{ title: "Restaurants", headerShown: false }}
         />
         <Tab.Screen
           name="favorites"
-          component={Favorites}
-          options={{ title: "Favorites" }}
+          component={FavoritesStack}
+          options={{ title: "Favorites", headerShown: false }}
         />
         <Tab.Screen
           name="top-restaurants"
-          component={TopRestaurants}
-          options={{ title: "Top 5" }}
+          component={TopRestaurantsStack}
+          options={{ title: "Top 5", headerShown: false }}
         />
         <Tab.Screen
           name="search"
-          component={Search}
-          options={{ title: "Search" }}
+          component={SearchStack}
+          options={{ title: "Search", headerShown: false }}
         />
         <Tab.Screen
           name="account"
-          component={Account}
-          options={{ title: "Account" }}
+          component={AccountStack}
+          options={{ title: "Account", headerShown: false }}
         />
       </Tab.Navigator>
     </NavigationContainer>
