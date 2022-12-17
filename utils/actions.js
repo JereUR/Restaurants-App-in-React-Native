@@ -29,7 +29,7 @@ export const registerUser = async (email, password) => {
     await createUserWithEmailAndPassword(getAuth(app), email, password);
   } catch (error) {
     result.statusResponse = false;
-    result.error = "This email has already been registered";
+    result.error = "This email has already been registered.";
   }
 
   return result;
@@ -37,4 +37,17 @@ export const registerUser = async (email, password) => {
 
 export const closeSession = () => {
   return getAuth(app).signOut();
+};
+
+export const loginWithEmailAndPassword = async (email, password) => {
+  const result = { statusResponse: true, error: null };
+
+  try {
+    await signInWithEmailAndPassword(getAuth(app), email, password);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = "Invalid username or password.";
+  }
+
+  return result;
 };
