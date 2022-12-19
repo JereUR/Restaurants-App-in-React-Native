@@ -56,20 +56,30 @@ export const loginWithEmailAndPassword = async (email, password) => {
 };
 
 export const uploadImage = async (image, path, name) => {
+  /* console.log("test");
   const result = { statusResponse: false, error: null, url: null };
   const ref = storage().ref(path).child(name);
-  const blob = await fileToBlob(image);
+  const blob = await fileToBlob(image); */
 
-  try {
+  let reference = storage().ref(name);
+  let task = reference.putFile(path);
+
+  task
+    .then(() => {
+      console.log("Image uploaded to the bucket!");
+    })
+    .catch((e) => console.log("uploading image error => ", e));
+
+  /* try {
     await ref.put(blob);
     const url = await storage().ref(`${path}/${name}`).getDownloadURL();
     result.statusResponse = true;
     result.url = url;
   } catch (error) {
     result.error = error;
-  }
+  } */
 
-  return result;
+  /* return result; */
 };
 
 export const updateProfile = async (data) => {

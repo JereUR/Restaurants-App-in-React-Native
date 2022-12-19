@@ -1,15 +1,26 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Alert,
+  Image,
+} from "react-native";
 import React, { useState } from "react";
 import { Avatar } from "react-native-elements";
+import ImagePicker from "react-native-image-picker";
+import storage from "@react-native-firebase/storage";
 
 import { loadImageFromGallery } from "../../utils/helpers";
 import { updateProfile, uploadImage } from "../../utils/actions";
-import { Alert } from "react-native";
+import Loading from "../Loading";
 
 export default function InfoUser({ user, setLoading, setLoadingText }) {
   const [photoUrl, setPhotoUrl] = useState(user.photoURL);
 
-  /* const changePhoto = async () => {
+  const changePhoto = async () => {
     const result = await loadImageFromGallery([1, 1]);
 
     if (!result.status) {
@@ -44,7 +55,7 @@ export default function InfoUser({ user, setLoading, setLoadingText }) {
     } else {
       Alert.alert("An error occurred while updating the profile photo");
     }
-  }; */
+  };
 
   return (
     <View style={styles.container}>
@@ -83,5 +94,25 @@ const styles = StyleSheet.create({
   displayName: {
     fontWeight: "bold",
     paddingBottom: 5,
+  },
+
+  progressBarContainer: {
+    marginTop: 20,
+  },
+
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  uploadButton: {
+    borderRadius: 5,
+    width: 150,
+    height: 50,
+    backgroundColor: "#ffb6b9",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
   },
 });
