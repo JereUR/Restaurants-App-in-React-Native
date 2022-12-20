@@ -6,7 +6,11 @@ import { getAuth, updateEmail, updateProfile } from "firebase/auth";
 
 import { app } from "../../utils/firebase";
 import { validateEmail } from "../../utils/helpers";
-import { getCurrentUser, reauthenticate } from "../../utils/actions";
+import {
+  getCurrentUser,
+  reauthenticate,
+  updateEmailUser,
+} from "../../utils/actions";
 
 export default function ChangeEmailForm({
   email,
@@ -36,11 +40,11 @@ export default function ChangeEmailForm({
       return;
     }
 
-    const resultUpdateEmail = await updateEmail(getCurrentUser(app), newEmail);
+    const resultUpdateEmail = await updateEmailUser(newEmail);
 
     setLoading(false);
 
-    if (resultUpdateEmail != undefined) {
+    if (!resultUpdateEmail.statusResponse) {
       setErrorEmail(
         "You cannot change this email, it is already in use by another user."
       );

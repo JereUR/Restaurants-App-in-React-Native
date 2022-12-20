@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  updateEmail,
 } from "firebase/auth";
 import storage from "@react-native-firebase/storage";
 import firestore from "@react-native-firebase/firestore";
@@ -80,5 +81,16 @@ export const reauthenticate = async (password) => {
     result.error = error;
   }
 
+  return result;
+};
+
+export const updateEmailUser = async (email) => {
+  const result = { statusResponse: true, error: null };
+  try {
+    await updateEmail(getCurrentUser(), email);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = error;
+  }
   return result;
 };
