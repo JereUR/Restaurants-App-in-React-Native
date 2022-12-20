@@ -13,13 +13,15 @@ export default function UserLogged() {
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [user, setUser] = useState(null);
+  const [reloadUser, setReloadUser] = useState(false);
 
   const toastRef = useRef();
   const navigation = useNavigation();
 
   useEffect(() => {
     setUser(getCurrentUser());
-  }, []);
+    setReloadUser(false);
+  }, [reloadUser]);
 
   return (
     <View style={styles.container}>
@@ -29,8 +31,13 @@ export default function UserLogged() {
             user={user}
             setLoading={setLoading}
             setLoadingText={setLoadingText}
+            toastRef={toastRef}
           />
-          <AccountOptions user={user} toastRef={toastRef} />
+          <AccountOptions
+            user={user}
+            toastRef={toastRef}
+            setReloadUser={setReloadUser}
+          />
         </View>
       )}
 

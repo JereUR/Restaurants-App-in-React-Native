@@ -1,23 +1,18 @@
-import {
-  View,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  Alert,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
 import { Avatar } from "react-native-elements";
-import ImagePicker from "react-native-image-picker";
-import storage from "@react-native-firebase/storage";
 
 import { loadImageFromGallery } from "../../utils/helpers";
-import { updateProfile, uploadImage } from "../../utils/actions";
-import Loading from "../Loading";
+import { updateProfile } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+import { app } from "../../utils/firebase";
 
-export default function InfoUser({ user, setLoading, setLoadingText }) {
+export default function InfoUser({
+  user,
+  setLoading,
+  setLoadingText,
+  toastRef,
+}) {
   const [photoUrl, setPhotoUrl] = useState(user.photoURL);
 
   const changePhoto = async () => {
@@ -30,31 +25,21 @@ export default function InfoUser({ user, setLoading, setLoadingText }) {
     setLoadingText("Updating image...");
     setLoading(true);
 
-    const resultUploadImage = await uploadImage(
-      result.image,
-      "avatars",
-      user.uid
-    );
+    const resultUploadImage = await updateProfile(getAuth(app).currentUser, {
+      photoURL: result.image,
+    });
 
-    console.log(resultUploadImage);
-
-    if (!resultUploadImage.statusResponse) {
+    if (resultUploadImage != undefined) {
       setLoading(false);
       Alert.alert("An error occurred while storing the profile photo.");
       return;
     }
 
-    const resultUpdateProfile = await updateProfile({
-      photoURL: resultUploadImage.url,
-    });
+    setPhotoUrl(result.image);
+
+    toastRef.current.show("Profile photo changed.", 3000);
 
     setLoading(false);
-
-    if (resultUpdateProfile.statusResponse) {
-      setPhotoUrl(resultUploadImage.url);
-    } else {
-      Alert.alert("An error occurred while updating the profile photo");
-    }
   };
 
   return (
@@ -62,6 +47,7 @@ export default function InfoUser({ user, setLoading, setLoadingText }) {
       <Avatar
         rounded
         size="large"
+        onPress={changePhoto}
         source={
           photoUrl
             ? { uri: photoUrl }
