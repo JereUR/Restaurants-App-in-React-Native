@@ -3,12 +3,12 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import storage from "@react-native-firebase/storage";
 import firestore from "@react-native-firebase/firestore";
 import { app } from "./firebase";
-
-import { fileToBlob } from "./helpers";
 
 /* const db = firestore(); */
 
@@ -60,6 +60,21 @@ export const updateProfileInfo = async (data) => {
 
   try {
     await getAuth(app).currentUser.updateProfile(data);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = error;
+  }
+
+  return result;
+};
+
+export const reauthenticate = async (password) => {
+  const result = { statusResponse: true, error: null };
+  const user = getCurrentUser();
+  const credentials = EmailAuthProvider.credential(user.email, password);
+
+  try {
+    await reauthenticateWithCredential(user, credentials);
   } catch (error) {
     result.statusResponse = false;
     result.error = error;

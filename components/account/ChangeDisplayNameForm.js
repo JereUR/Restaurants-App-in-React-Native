@@ -4,7 +4,6 @@ import { Button, Input } from "react-native-elements";
 import { isEmpty } from "lodash";
 import { getAuth, updateProfile } from "firebase/auth";
 
-import Loading from "../Loading";
 import { app } from "../../utils/firebase";
 
 export default function ChangeDisplayNameForm({
@@ -65,6 +64,7 @@ export default function ChangeDisplayNameForm({
       <Input
         placeholder="Enter Name/s and Lastname/s"
         containerStyle={styles.input}
+        defaultValue={displayName}
         onChange={(e) => setNewDisplayName(e.nativeEvent.text)}
         errorMessage={error}
         rightIcon={{
