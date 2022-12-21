@@ -1,16 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import { Button, Icon, Input } from "react-native-elements";
 import { isEmpty } from "lodash";
-import { getAuth, updateEmail, updateProfile } from "firebase/auth";
 
-import { app } from "../../utils/firebase";
 import { validateEmail } from "../../utils/helpers";
-import {
-  getCurrentUser,
-  reauthenticate,
-  updateEmailUser,
-} from "../../utils/actions";
+import { reauthenticate, updateEmailUser } from "../../utils/actions";
 
 export default function ChangeEmailForm({
   email,
