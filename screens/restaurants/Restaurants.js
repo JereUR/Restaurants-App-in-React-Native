@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { Icon } from "react-native-elements";
+import { useFocusEffect } from "@react-navigation/native";
 
 import Loading from "../../components/Loading";
 import { getCurrentUser } from "../../utils/actions";
@@ -8,11 +9,18 @@ import { getCurrentUser } from "../../utils/actions";
 export default function Restaurants({ navigation }) {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     let userInfo = null;
     userInfo = getCurrentUser();
     userInfo !== null ? setUser(true) : setUser(false);
-  }, []);
+  }, []); */
+
+  useFocusEffect(
+    useCallback(() => {
+      const user = getCurrentUser();
+      user ? setUser(true) : setUser(false);
+    }, [])
+  );
 
   if (user === null) {
     return <Loading isVisible={true} text="Loading..." />;

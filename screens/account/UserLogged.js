@@ -47,7 +47,7 @@ export default function UserLogged() {
         title="Sign out"
         onPress={() => {
           closeSession();
-          navigation.navigate("restaurants");
+          navigation.navigate("login");
         }}
       ></Button>
       <Toast ref={toastRef} position="center" opacity={0.9} />
