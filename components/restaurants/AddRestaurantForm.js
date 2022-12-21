@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-export default function Restaurants() {
+export default function AddRestaurantForm({ toastRef, setLoading }) {
   return (
     <View>
-      <Text>Restaurants</Text>
+      <Text>AddRestaurantForm</Text>
     </View>
   );
 }

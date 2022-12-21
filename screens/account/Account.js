@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 import UserLogged from "./UserLogged";
 import UserGuest from "./UserGuest";
-import { getCurrentUser, isUserLogged } from "../../utils/actions";
+import { getCurrentUser } from "../../utils/actions";
 import Loading from "../../components/Loading";
 
 export default function Account() {
