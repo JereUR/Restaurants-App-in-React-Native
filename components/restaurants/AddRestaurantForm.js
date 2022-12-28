@@ -6,12 +6,17 @@ import {
   Alert,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Button, Icon, Image, Input } from "react-native-elements";
 import CountryPicker from "react-native-country-picker-modal";
-import { map, size, filter } from "lodash";
+import { map, size, filter, isEmpty } from "lodash";
+import MapView, { Marker } from "react-native-maps";
 
-import { loadImageFromGallery } from "../../utils/helpers";
+import {
+  getCurrentLocation,
+  loadImageFromGallery,
+  validateEmail,
+} from "../../utils/helpers";
 import Modal from "../Modal";
 
 const widthScreen = Dimensions.get("window").width;
@@ -29,10 +34,65 @@ export default function AddRestaurantForm({
   const [errorPhone, setErrorPhone] = useState(null);
   const [imagesSelected, setImagesSelected] = useState([]);
   const [isVisibleMap, setIsVisibleMap] = useState(false);
-  const [locationrestaurant, setLocationrestaurant] = useState(null);
+  const [locationRestaurant, setLocationRestaurant] = useState(null);
 
   const addRestaurant = () => {
-    console.log(formData);
+    if (!validateForm()) {
+      return;
+    }
+
+    console.log("Correct form");
+  };
+
+  const validateForm = () => {
+    clearErrors();
+    let isValid = true;
+
+    if (isEmpty(formData.name)) {
+      setErrorName("You must enter the name of the Restaurant.");
+      isValid = false;
+    }
+
+    if (isEmpty(formData.address)) {
+      setErrorAddress("You must enter the address of the Restaurant.");
+      isValid = false;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setErrorEmail("You must enter a valid email for the Restaurant.");
+      isValid = false;
+    }
+
+    if (size(formData.phone) < 10) {
+      setErrorPhone("You must enter a valid phone for the Restaurant.");
+      isValid = false;
+    }
+
+    if (isEmpty(formData.description)) {
+      setErrorDescription("You must enter the description of the Restaurant.");
+      isValid = false;
+    }
+
+    if (!locationRestaurant) {
+      toastRef.current.show("You must locate the restaurant on the map.", 3000);
+      isValid = false;
+    } else if (size(imagesSelected) === 0) {
+      toastRef.current.show(
+        "You must add at least one image to the Restaurant.",
+        3000
+      );
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const clearErrors = () => {
+    setErrorName(null);
+    setErrorAddress(null);
+    setErrorDescription(null);
+    setErrorEmail(null);
+    setErrorPhone(null);
   };
 
   return (
@@ -47,6 +107,7 @@ export default function AddRestaurantForm({
         errorAddress={errorAddress}
         errorPhone={errorPhone}
         setIsVisibleMap={setIsVisibleMap}
+        locationRestaurant={locationRestaurant}
       />
       <UploadImage
         toastRef={toastRef}
@@ -61,7 +122,7 @@ export default function AddRestaurantForm({
       <MapRestaurant
         isVisibleMap={isVisibleMap}
         setIsVisibleMap={setIsVisibleMap}
-        setLocationrestaurant={setLocationrestaurant}
+        setLocationRestaurant={setLocationRestaurant}
         toastRef={toastRef}
       />
     </ScrollView>
@@ -71,12 +132,54 @@ export default function AddRestaurantForm({
 function MapRestaurant({
   isVisibleMap,
   setIsVisibleMap,
-  setLocationrestaurant,
+  setLocationRestaurant,
   toastRef,
 }) {
+  const [newRegion, setNewRegion] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const response = await getCurrentLocation();
+      if (response.status) {
+        setNewRegion(response.location);
+      }
+    })();
+  }, []);
+
+  const confirmLocation = () => {
+    setLocationRestaurant(newRegion);
+    toastRef.current.show("Location saved successfully.", 3000);
+    setIsVisibleMap(false);
+  };
+
   return (
     <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
-      <Text>map goes here!</Text>
+      <View>
+        {newRegion && (
+          <MapView
+            style={styles.mapStyle}
+            initialRegion={newRegion}
+            showsUserLocation={true}
+            onRegionChange={(region) => setNewRegion(region)}
+          >
+            <Marker coordinate={newRegion} draggable />
+          </MapView>
+        )}
+        <View style={styles.viewMapBtn}>
+          <Button
+            title="Save location"
+            containerStyle={styles.viewMapBtnContainerSave}
+            buttonStyle={styles.viewMapBtnSave}
+            onPress={confirmLocation}
+          />
+          <Button
+            title="Cancel location"
+            containerStyle={styles.viewMapBtnContainerCancel}
+            buttonStyle={styles.viewMapBtnCancel}
+            onPress={() => setIsVisibleMap(false)}
+          />
+        </View>
+      </View>
     </Modal>
   );
 }
@@ -158,6 +261,7 @@ function FormAdd({
   errorAddress,
   errorPhone,
   setIsVisibleMap,
+  locationRestaurant,
 }) {
   const [country, setCountry] = useState("AR");
   const [callingCode, setCallingCode] = useState("54");
@@ -183,7 +287,7 @@ function FormAdd({
         rightIcon={{
           type: "material-community",
           name: "google-maps",
-          color: "#c2c2c2",
+          color: locationRestaurant ? "#442484" : "#c2c2c2",
           onPress: () => setIsVisibleMap(true),
         }}
       />
@@ -234,6 +338,7 @@ function FormAdd({
 const defaultFormValues = () => {
   return {
     name: "",
+    address: "",
     description: "",
     email: "",
     phone: "",
@@ -296,5 +401,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 200,
     marginBottom: 20,
+  },
+
+  mapStyle: {
+    width: "100%",
+    height: 550,
+  },
+
+  viewMapBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+
+  viewMapBtnContainerCancel: {
+    paddingLeft: 15,
+  },
+
+  viewMapBtnContainerSave: {
+    paddingRight: 15,
+  },
+
+  viewMapBtnCancel: {
+    backgroundColor: "#a65273",
+  },
+
+  viewMapBtnSave: {
+    backgroundColor: "#442484",
   },
 });
